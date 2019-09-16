@@ -1506,7 +1506,7 @@ Resources:
         Name: Unzip
         Actions:
         -
-          Name: UnzipCFN
+          Name: UnzipCFNTemplate
           InputArtifacts:
             - Name: SourceOutput   
           ActionTypeId:
@@ -1702,12 +1702,9 @@ Resources:
                     putObjects.append(putFile)
                     print(putFile)
                     print('success')
-              if len(putObjects) > 0:
-                print('successful extraction from zip fule')
-            except Exception as e:
-              print(e)
-              print('Error getting object {} from bucket {}. Make sure they exist and your bucket is in the same region as this function.'.format(key, bucket))
-              raise e
+              return codepipeline.put_job_success_result(jobId=event["CodePipeline.job"]["id"], currentRevision={'revision':'1', 'changeIdentifier':'1'})
+            except:
+              return codepipeline.put_job_failure_result(jobId=event["CodePipeline.job"]["id"], failureDetails={'type':'JobFailed','message':'This code failed to complete successfully'})
 
   UploadArtifactToProd:
     Type: AWS::Lambda::Function
