@@ -7,7 +7,7 @@
         "ALBVPCSubNetIds": "subnet-32fbeb69,subnet-884581ee",
         "DBSubNetIds": "subnet-0e4d66d54f8887edd,subnet-0c014add450a204f6",
         "EC2InstanceType": "t2.large",
-        "AMIIdentifier": "ami-0b69ea66ff7391e80",
+        "AMIIdentifier": "ami-048a01c78f7bae4aa",
         "EC2KeyName": "isen2-usw1-kp",
         "InternetAccessible": "internet-facing",
         "DBInstanceType": "db.m5.large",
