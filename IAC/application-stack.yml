@@ -22,11 +22,7 @@ Parameters:
     Default: db.m5.large
   EC2InstanceType: 
     Type: String
-    Default: t3.micro
-    AllowedValues: 
-      - t3.micro
-      - m5.large
-      - r5.large 
+    Default: t2.micro
   EC2KeyName: 
     Type: String
   EC2VPCSubNetIds:
