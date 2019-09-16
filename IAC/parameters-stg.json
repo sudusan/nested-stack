@@ -7,7 +7,7 @@
         "EC2VPCSubNetIds": "subnet-097d4c07ade875bc2,subnet-0a20ce4761d080884",
         "DBSubNetIds": "subnet-0597dbcdcc4305182,subnet-0775f8f58133f505c",
         "EC2InstanceType": "t2.micro",
-        "AMIIdentifier": "ami-048a01c78f7bae4aa",
+        "AMIIdentifier": "ami-0245d318c6788de52",
         "EC2KeyName": "isen1-usw1-kp",
         "InternetAccessible": "internet-facing",
         "DBInstanceType": "db.m5.large",
