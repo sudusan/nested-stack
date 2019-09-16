@@ -1506,7 +1506,7 @@ Resources:
         Name: Unzip
         Actions:
         -
-          Name: UnzipCFNTemplate
+          Name: UnzipCFN
           InputArtifacts:
             - Name: SourceOutput   
           ActionTypeId:
@@ -1688,6 +1688,7 @@ Resources:
           def lambda_handler(event, context):
           #key = urllib.unquote_plus(event['Records'][0]['s3']['object']['key'].encode('utf8'))
             key = os.environ['TEMPLATE_BUCKET_KEY']
+            codepipeline = boto3.client('codepipeline')
             try:
               obj = s3.get_object(Bucket=bucket, Key=key)
               putObjects = []
