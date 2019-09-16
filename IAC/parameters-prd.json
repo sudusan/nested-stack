@@ -2,7 +2,7 @@
     "Parameters": {
         "ApplicationName": "myapp",
         "EnvironmentClass": "PRD",
-        "VpcId": "vpc-7ce4f11b",
+        "VPCId": "vpc-7ce4f11b",
         "EC2VPCSubNetIds": "subnet-0b81ece345f6c4fff,subnet-002d90d315ae0239a",
         "ALBVPCSubNetIds": "subnet-32fbeb69,subnet-884581ee",
         "DBSubNetIds": "subnet-0e4d66d54f8887edd,subnet-0c014add450a204f6",

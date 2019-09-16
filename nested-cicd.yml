@@ -69,11 +69,11 @@ Parameters:
  StageLambdaRole:
   Description: The AWS IAM Role of the Stage account's Lambda execution role. Leave as default if EnvironmentClass is not "PROD"
   Type: String
-  Default: look-at-outputs
+  Default: nested-stack-1-LambdaServiceRole-75YSS4DTTJGB
  ProdBucketName:
   Description: The Name of the production bucket that S3 will post to if codepipeline executes successfully.
   Type: String
-  Default: a-production-bucket
+  Default: nested-stack-prd-1-codepipelineartifactstorebucke-1w3946kjgippf
  SlackWebhookUrl:
     Description: Incoming Webhook url for slack after you create your app, store and encrypt in parameter store, It should be of form {{resolve:ssm-secure:<key-name>:<version>}}'
     Type: String

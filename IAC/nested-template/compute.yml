@@ -22,7 +22,6 @@ Parameters:
     Type: CommaDelimitedList
   VPCId: 
     Type: String
-    Default: vpc-ed780097
   InternetAccessible:
     Type: String
     Default: internal

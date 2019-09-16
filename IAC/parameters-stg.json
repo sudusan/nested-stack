@@ -2,7 +2,7 @@
     "Parameters": {
         "ApplicationName": "myapp",
         "EnvironmentClass": "STG",
-        "VpcId": "vpc-527f7c35",
+        "VPCId": "vpc-527f7c35",
         "ALBVPCSubNetIds": "subnet-1d656b46,subnet-3dff0d5b",
         "EC2VPCSubNetIds": "subnet-097d4c07ade875bc2,subnet-0a20ce4761d080884",
         "DBSubNetIds": "subnet-0597dbcdcc4305182,subnet-0775f8f58133f505c",
