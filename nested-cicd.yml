@@ -1300,6 +1300,7 @@ Resources:
           -
             Effect: Allow
             Action:
+            - s3:GetObject
             - s3:PutObject
             - s3:PutObjectAcl
             Resource: '*'
@@ -1502,6 +1503,22 @@ Resources:
             PollForSourceChanges: true
           RunOrder: 1
       -
+        Name: Unzip
+        Actions:
+        -
+          Name: UnzipCFN
+          InputArtifacts:
+            - Name: SourceOutput   
+          ActionTypeId:
+            Category: Invoke
+            Owner: AWS
+            Version: "1"
+            Provider: Lambda
+          Configuration:
+            FunctionName: !Ref UnzipCfnTemplate
+            UserParameters: !Ref ProdBucketName
+          RunOrder: 3
+      -
         Name: Deploy
         Actions:
         -
@@ -1639,6 +1656,59 @@ Resources:
                   return codepipeline.put_job_success_result(jobId=event["CodePipeline.job"]["id"], currentRevision={'revision':'1', 'changeIdentifier':'1'})
               except:
                   return codepipeline.put_job_failure_result(jobId=event["CodePipeline.job"]["id"], failureDetails={'type':'JobFailed','message':'This code failed to complete successfully'})
+  
+  UnzipCfnTemplate:
+    Type: AWS::Lambda::Function
+    Condition: STGEnvironment
+    Properties:
+      Description: This takes the artifact and places it in the production account bucket for CI/CD.
+      Handler: index.lambda_handler
+      Role: !GetAtt LambdaServiceRole.Arn
+      Runtime: python3.7
+      Tags:
+        - Key: ApplicationName
+          Value: !Ref ApplicationName
+        - Key: EnvironmentClass
+          Value: !Ref EnvironmentClass
+      Timeout: 60
+      Environment:
+        Variables:
+          TEMPLATE_BUCKET: !Ref 'OutputBucket'
+          TEMPLATE_BUCKET_KEY: !Ref 'SourceObjectKey'
+      Code:
+        ZipFile: |
+          import urllib
+          import zipfile
+          import boto3
+          import io
+          import os
+          print('Loading function')
+          s3 = boto3.client('s3')
+          bucket = os.environ['TEMPLATE_BUCKET']
+          def lambda_handler(event, context):
+          #key = urllib.unquote_plus(event['Records'][0]['s3']['object']['key'].encode('utf8'))
+            key = os.environ['TEMPLATE_BUCKET_KEY']
+            try:
+              obj = s3.get_object(Bucket=bucket, Key=key)
+              putObjects = []
+              with io.BytesIO(obj["Body"].read()) as tf:
+              # rewind the file
+                tf.seek(0)
+                # Read the file as a zipfile and process the members
+                with zipfile.ZipFile(tf, mode='r') as zipf:
+                  for file in zipf.infolist():
+                    fileName = file.filename
+                    putFile = s3.put_object(Bucket=bucket, Key=fileName, Body=zipf.read(file))
+                    putObjects.append(putFile)
+                    print(putFile)
+                    print('success')
+              if len(putObjects) > 0:
+                print('successful extraction from zip fule')
+            except Exception as e:
+              print(e)
+              print('Error getting object {} from bucket {}. Make sure they exist and your bucket is in the same region as this function.'.format(key, bucket))
+              raise e
+
   UploadArtifactToProd:
     Type: AWS::Lambda::Function
     Condition: STGEnvironment
