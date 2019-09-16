@@ -835,14 +835,6 @@ Resources:
         - Endpoint: !GetAtt 'ApprovalRequesterFunction.Arn'
           Protocol: lambda
   
-  ChangeSetApprovalSNSTopic:
-    Type: AWS::SNS::Topic
-    Condition: NotSTGEnvironment
-    Properties:
-      Subscription:
-      - Endpoint: !GetAtt 'ChangeSetDetailsFunction.Arn'
-        Protocol: lambda
-
   pipelinesevent:
     Type: 'AWS::SNS::Topic'
     Condition: NotSTGEnvironment
@@ -894,55 +886,6 @@ Resources:
           Resource: !Ref pipelinesevent
       Topics:
       - !Ref pipelinesevent  
-
-  ChangeSetDetailsFunction:
-    Type: AWS::Lambda::Function
-    Condition: NotSTGEnvironment
-    Properties:
-      Description:  to get details of a changeset
-      Handler: index.lambda_handler
-      Role: !GetAtt LambdaServiceRole.Arn
-      Runtime: python3.7
-      Tags:
-        - Key: ApplicationName
-          Value: !Ref ApplicationName
-        - Key: EnvironmentClass
-          Value: !Ref EnvironmentClass
-      Timeout: 300
-      Environment:
-        Variables:
-          CHANGESET_NAME: !Ref 'ChangeSetName'
-          STACK_NAME: !Join [ '-', [ !Ref ApplicationName, !Ref EnvironmentClass, 'Stack' ] ] 
-      Code:
-        ZipFile: |
-          import json
-          import boto3
-          import os
-          import logging
-          logger = logging.getLogger()
-          logger.setLevel(logging.INFO)
-          cfnClient = boto3.client('cloudformation')
-          def lambda_handler(event, context):
-          # Get stack-name from the event
-            codepipeline = boto3.client('codepipeline')
-            stack_name = os.environ['STACK_NAME']
-            changeset_name = os.environ['CHANGESET_NAME']
-            print(stack_name)
-            print(changeset_name)
-            try:
-              # Call Describe Change Set
-              response = cfnClient.describe_change_set(ChangeSetName=changeset_name, StackName=stack_name)
-              # Log response from AWS CloudFormation
-              changes = response['Changes']
-              changestring = str(changes)
-              newstr = changestring.replace("'", '"')
-              csjson = '{"Changes":' + newstr + '}'
-              print(csjson)
-              # Return the success message
-              return codepipeline.put_job_success_result(jobId=event["CodePipeline.job"]["id"], currentRevision={'revision':'1', 'changeIdentifier':'1'})
-            except Exception as e:
-              logger.error(e)
-              return codepipeline.put_job_failure_result(jobId=event["CodePipeline.job"]["id"], failureDetails={'type':'JobFailed','message':'This code failed to complete successfully'})
 
   # Deployment Approval Requester lambda function
   ApprovalRequesterFunction:
@@ -1499,8 +1442,8 @@ Resources:
             Capabilities: CAPABILITY_NAMED_IAM
             RoleArn: !GetAtt CodePipelineServiceRole.Arn
             ChangeSetName: !Ref ChangeSetName
-            TemplateConfiguration: SourceOutput::IAC/newspec-param-isen2.json
-            TemplatePath: SourceOutput::IAC/newspec.yml
+            TemplateConfiguration: SourceOutput::IAC/parameters-prd.json
+            TemplatePath: SourceOutput::IAC/application-stack.yml
           RunOrder: 2
       - Name: Approval
         Actions:
@@ -1575,8 +1518,8 @@ Resources:
             ActionMode: CREATE_UPDATE
             Capabilities: CAPABILITY_NAMED_IAM
             RoleArn: !GetAtt CodePipelineServiceRole.Arn
-            TemplateConfiguration: SourceOutput::IAC/newspec-param-isen1.json
-            TemplatePath: SourceOutput::IAC/newspec.yml
+            TemplateConfiguration: SourceOutput::IAC/parameters-stg.json
+            TemplatePath: SourceOutput::IAC/application-stack.yml
           RunOrder: 2
       -
         Name: TriggerProdDeployment

@@ -8,14 +8,14 @@ Parameters:
     Default: nested-stack
   EnvironmentClass:
     Type: String
-    Default: DEV
+    Default: STG
   AMIIdentifier:
     Type: AWS::EC2::Image::Id
   EC2InstanceType: 
     Type: String
   EC2KeyName: 
     Type: String
-    Default: isen2-east1-kp
+    Default: isen-usw1-kp
   EC2VPCSubNetIds:
     Type: CommaDelimitedList
   ALBVPCSubNetIds:

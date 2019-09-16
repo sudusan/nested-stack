@@ -1,15 +1,18 @@
 {
     "Parameters": {
-        "Application": "myapp",
-        "Environment": "STG",
-        "VpcId": "vpc-bf1785c5",
-        "EC2SubnetA": "subnet-1c317340",
-        "EC2SubnetB": "subnet-340c4d53",
+        "ApplicationName": "myapp",
+        "EnvironmentClass": "STG",
+        "VpcId": "vpc-527f7c35",
+        "ALBVPCSubNetIds": "subnet-1d656b46,subnet-3dff0d5b",
+        "EC2VPCSubNetIds": "subnet-097d4c07ade875bc2,subnet-0a20ce4761d080884",
+        "DBSubNetIds": "subnet-0597dbcdcc4305182,subnet-0775f8f58133f505c",
         "EC2InstanceType": "t2.micro",
         "EC2HostName": "myapphost",
         "EC2NodeCount": "1",
-        "AMI": "ami-0b69ea66ff7391e80",
-        "KeyName": "isen1-use1-kp",
-        "InternalCorporateCidrIp": "0.0.0.0/0"
+        "AMIIdentifier": "ami-0b69ea66ff7391e80",
+        "EC2KeyName": "isen1-usw1-kp",
+        "InternalCorporateCidrIp": "0.0.0.0/0",
+        "InternetAccessible": "internet-facing",
+        "DBInstanceType": "db.m5.large"
     }
 }
