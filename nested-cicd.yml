@@ -35,7 +35,7 @@ Parameters:
  SourceObjectKey:
   Description: 'S3 source artifact'
   Type: String
-  Default: sudusan/nested-changeset/sudusan_nested-changeset.zip
+  Default: sudusan/nested-stack/sudusan_nested-stack.zip
  SourceObjectKeyForProd:
   Description: 'S3 source artificat for production'
   Type: String
@@ -77,15 +77,15 @@ Parameters:
  SlackWebhookUrl:
     Description: Incoming Webhook url for slack after you create your app, store and encrypt in parameter store, It should be of form {{resolve:ssm-secure:<key-name>:<version>}}'
     Type: String
-    Default: 'https://hooks.slack.com/services/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'
+    Default: 'https://hooks.slack.com/services/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'
  SlackChannel:
     Description: Slack Channel where approvals needs to be sent
     Type: String
-    Default: des_autoresults_cicd
+    Default: sudu-personal-app
  SlackVerifToken:
     Description: slack verification token of the app, store and encrypt in parameter store, It should be of form {{resolve:ssm-secure:<key-name>:<version>}}'
     Type: String
-    Default: pZyo0T8Vksqbvxi7uQeJukHS
+    Default: pnw7eCdZEcekQ6Cgomq0kCjF
  SlackApprovalMembers:
     Description: List of AD account of the member who can perform the slack approval for CICD.
     Type: String
