@@ -10,6 +10,7 @@
         "AMIIdentifier": "ami-0b69ea66ff7391e80",
         "EC2KeyName": "isen1-usw1-kp",
         "InternetAccessible": "internet-facing",
-        "DBInstanceType": "db.m5.large"
+        "DBInstanceType": "db.m5.large",
+        "HTTPSCertificateARN": "arn:aws:acm:us-west-1:805262168568:certificate/68a11a31-260c-4dbc-8314-b46bb705f00e"
     }
 }

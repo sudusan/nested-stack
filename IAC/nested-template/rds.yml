@@ -10,8 +10,6 @@ Parameters:
     AllowedValues:
     - PRD
     - STG
-    - QA
-    - DEV
   EC2FleetSecurityGroup: 
     Type: String
   VPCId: 
@@ -68,19 +66,8 @@ Resources:
       UseDefaultProcessorFeatures: true
       VPCSecurityGroups:
         - !Ref DatabaseSecurityGroup
-    DependsOn: DatabaseSecurityGroup
   
-  #DatabaseSubnetGroup: #Cannot be created due to IAM permissioning on my role. 
-  #  Type: "AWS::RDS::DBSubnetGroup"
-  #  Properties:
-  #    DBSubnetGroupDescription: Subnet for Venafi RDS Instance #required
-  #    SubnetIds: !Split [ ',' , !Ref Subnets]
-  #    Tags:
-  #      - Key: EnvironmentClass
-  #        Value: !Ref EnvironmentClass    
-  #      - Key: ApplicationName
-  #        Value: !Ref ApplicationName  
-    
+  
 
   DatabaseSecurityGroup: 
     Type: AWS::EC2::SecurityGroup

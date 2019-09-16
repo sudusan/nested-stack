@@ -39,6 +39,8 @@ Parameters:
     AllowedValues: 
       - internet-facing
       - internal
+  HTTPSCertificateARN:
+    Type: String
 Resources:
   ComputeFleet:
     Type: AWS::CloudFormation::Stack
@@ -53,6 +55,7 @@ Resources:
         EC2VPCSubNetIds: !Ref EC2VPCSubNetIds
         VPCId: !Ref VPCId
         InternetAccessible: !Ref InternetAccessible
+        HTTPSCertificateARN: !Ref HTTPSCertificateARN
       Tags:
         - Key: EnvironmentClass
           Value: !Ref EnvironmentClass    
