@@ -1,9 +1,13 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: A Template with nested stacks
 Parameters:
-  S3NestedTemplateBucket:
+  StgNestedTemplateBucket:
     Type: String
     Default: nested-stack-1-outputbucket-1kn26rdvxk97y
+  ProdNestedTemplateBucket:
+    Type: String
+    Default: nested-stack-prd-1-codepipelineartifactstorebucke-1w3946kjgippf
+
   ApplicationName:
     Type: String
     Default: nested-app
@@ -48,9 +52,13 @@ Parameters:
   HTTPSCertificateARN:
     Type: String
     Default: 'arn:aws:acm:us-west-1:805262168568:certificate/68a11a31-260c-4dbc-8314-b46bb705f00e'
+Conditions:
+  STGEnvironment: !Equals [ !Ref EnvironmentClass, STG]
+  NotSTGEnvironment: !Not [ !Equals [ !Ref EnvironmentClass, STG]]
 Resources:
   ComputeFleet:
     Type: AWS::CloudFormation::Stack
+    Condition: STGEnvironment
     Properties:
       Parameters:
         ApplicationName: !Ref ApplicationName
@@ -68,9 +76,10 @@ Resources:
           Value: !Ref EnvironmentClass    
         - Key: ApplicationName
           Value: !Ref ApplicationName  
-      TemplateURL: !Sub https://s3.amazonaws.com/${S3NestedTemplateBucket}/IAC/nested-template/compute.yml  
+      TemplateURL: !Sub https://s3.amazonaws.com/${StgNestedTemplateBucket}/IAC/nested-template/compute.yml  
   RelationalDataStore:
     Type: AWS::CloudFormation::Stack
+    Condition: STGEnvironment
     Properties:
       Parameters:
         EC2SecurityGroup: !GetAtt ComputeFleet.Outputs.EC2SecurityGroup
@@ -80,4 +89,39 @@ Resources:
           Value: !Ref EnvironmentClass    
         - Key: ApplicationName
           Value: !Ref ApplicationName  
-      TemplateURL: !Sub https://s3.amazonaws.com/${S3NestedTemplateBucket}/IAC/nested-template/rds.yml
+      TemplateURL: !Sub https://s3.amazonaws.com/${StgNestedTemplateBucket}/IAC/nested-template/rds.yml
+  
+  ProdComputeFleet:
+    Type: AWS::CloudFormation::Stack
+    Condition: NotSTGEnvironment
+    Properties:
+      Parameters:
+        ApplicationName: !Ref ApplicationName
+        EnvironmentClass: !Ref EnvironmentClass
+        AMIIdentifier: !Ref AMIIdentifier
+        ALBVPCSubNetIds: !Ref ALBVPCSubNetIds
+        EC2InstanceType: !Ref EC2InstanceType
+        EC2KeyName: !Ref EC2KeyName
+        EC2VPCSubNetIds: !Ref EC2VPCSubNetIds
+        VPCId: !Ref VPCId
+        InternetAccessible: !Ref InternetAccessible
+        HTTPSCertificateARN: !Ref HTTPSCertificateARN
+      Tags:
+        - Key: EnvironmentClass
+          Value: !Ref EnvironmentClass    
+        - Key: ApplicationName
+          Value: !Ref ApplicationName  
+      TemplateURL: !Sub https://s3.amazonaws.com/${ProdNestedTemplateBucket}/IAC/nested-template/compute.yml  
+  ProdRelationalDataStore:
+    Type: AWS::CloudFormation::Stack
+    Condition: NotSTGEnvironment
+    Properties:
+      Parameters:
+        EC2SecurityGroup: !GetAtt ProdComputeFleet.Outputs.EC2SecurityGroup
+        DBInstanceClass: !Ref DBInstanceType
+      Tags:
+        - Key: EnvironmentClass
+          Value: !Ref EnvironmentClass    
+        - Key: ApplicationName
+          Value: !Ref ApplicationName  
+      TemplateURL: !Sub https://s3.amazonaws.com/${ProdNestedTemplateBucket}/IAC/nested-template/rds.yml
