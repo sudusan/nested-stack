@@ -2,7 +2,7 @@
 AWSTemplateFormatVersion: 2010-09-09
 Transform:
   - 'AWS::Serverless-2016-10-31'
-Description: 'CICD Pipeline for all Cirrus applications'
+Description: 'CICD Pipeline for all Cirrus applications that have nested templates'
 Parameters:
  QSS3BucketName:
     AllowedPattern: '^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$'
