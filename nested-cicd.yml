@@ -1728,6 +1728,7 @@ Resources:
           import boto3
           import zipfile
           import logging
+          import io
           def handler(event, context):
               logger = logging.getLogger()
               logger.setLevel(logging.INFO)
