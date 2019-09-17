@@ -91,7 +91,8 @@ Resources:
       Tags:
       - Key: Name
         Value: Master Database
-      VPCSecurityGroups: !GetAtt [DBEC2SecurityGroup, GroupId]
+      VPCSecurityGroups: 
+        - !GetAtt [DBEC2SecurityGroup, GroupId]
     DeletionPolicy: Snapshot
   ReplicaDB:
     Type: AWS::RDS::DBInstance
