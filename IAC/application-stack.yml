@@ -20,7 +20,7 @@ Parameters:
     Default: "ami-0245d318c6788de52"
   DBInstanceType:
     Type: String
-    Default: db.m5.large
+    Default: db.t2.small
   EC2InstanceType: 
     Type: String
     Default: t2.large
