@@ -1736,6 +1736,7 @@ Resources:
               logging.getLogger('botocore').setLevel(logging.ERROR)
               codepipeline = boto3.client('codepipeline')
               s3 = boto3.resource('s3')
+              s3client = boto3.client('s3')
               try:
                   s3bucket = event["CodePipeline.job"]["data"]["inputArtifacts"][0]["location"]["s3Location"]["bucketName"]
                   s3key = event["CodePipeline.job"]["data"]["inputArtifacts"][0]["location"]["s3Location"]["objectKey"]
@@ -1743,14 +1744,14 @@ Resources:
                   s3.meta.client.download_file(s3bucket, s3key, '/tmp/bundle.zip')
                   s3.meta.client.upload_file('/tmp/bundle.zip', s3target , 'master/bundle.zip', ExtraArgs={'ServerSideEncryption':'AES256','ACL':'bucket-owner-full-control'})
                   newKey = 'master/bundle.zip'
-                  obj = s3.get_object(Bucket=s3target, Key=newKey)
+                  obj = s3client.get_object(Bucket=s3target, Key=newKey)
                   putObjects = []
                   with io.BytesIO(obj["Body"].read()) as tf:
                     tf.seek(0)
                     with zipfile.ZipFile(tf, mode='r') as zipf:
                       for file in zipf.infolist():
                         fileName = file.filename
-                        putFile = s3.put_object(Bucket=bucket, Key=fileName, Body=zipf.read(file))
+                        putFile = s3client.put_object(Bucket=bucket, Key=fileName, Body=zipf.read(file))
                         putObjects.append(putFile)
                         print(putFile)
                         print('success')
