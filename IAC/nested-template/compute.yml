@@ -11,72 +11,66 @@ Parameters:
     Default: STG
   AMIIdentifier:
     Type: AWS::EC2::Image::Id
+    Default: "ami-0245d318c6788de52"
   EC2InstanceType: 
     Type: String
+    Default: t2.large
   EC2KeyName: 
     Type: String
-    Default: isen-usw1-kp
+    Default: "isen1-usw1-kp"
   EC2VPCSubNetIds:
     Type: CommaDelimitedList
+    Default: "subnet-097d4c07ade875bc2,subnet-0a20ce4761d080884"
   ALBVPCSubNetIds:
     Type: CommaDelimitedList
+    Default: "subnet-1d656b46,subnet-3dff0d5b"
   VPCId: 
     Type: String
+    Default: "vpc-527f7c35"
   InternetAccessible:
     Type: String
-    Default: internal
+    Default: internet-facing
     AllowedValues: 
       - internet-facing
       - internal
   HTTPSCertificateARN:
     Type: String
+    Default: 'arn:aws:acm:us-west-1:805262168568:certificate/68a11a31-260c-4dbc-8314-b46bb705f00e'
 Resources: 
 
   EC2AZ1:
     Type: "AWS::EC2::Instance"
     Properties:
-      AvailabilityZone: us-west-1a #Hardcoded based on Default Values supplied.
-      EbsOptimized: true
-      #IamInstanceProfile: String #This will be important to identify in the future.
       ImageId: !Ref AMIIdentifier
       InstanceInitiatedShutdownBehavior: 'stop'
       InstanceType: !Ref EC2InstanceType
       KeyName: !Ref EC2KeyName
       Monitoring: true
-      #PrivateIpAddress: String #If a specific IP Address is desired.
       SecurityGroupIds:
         - !GetAtt EC2FleetSecurityGroup.GroupId
-      SourceDestCheck: true
       SubnetId: !Select [ 0 , !Ref EC2VPCSubNetIds ]
       Tags:
         - Key: ApplicationName
           Value: !Ref ApplicationName
         - Key: EnvironmentClass
           Value: !Ref EnvironmentClass
-      #UserData: String #Perhaps the app startup commands.
 
   EC2AZ2:
     Type: "AWS::EC2::Instance"
     Properties:
-      AvailabilityZone: us-west-1b #Hardcoded based on Default Values supplied.
-      EbsOptimized: true
-      #IamInstanceProfile: String #This will be important to identify in the future.
       ImageId: !Ref AMIIdentifier
       InstanceInitiatedShutdownBehavior: 'stop'
       InstanceType: !Ref EC2InstanceType
       KeyName: !Ref EC2KeyName
       Monitoring: true
-      #PrivateIpAddress: String #If a specific IP Address is desired.
       SecurityGroupIds:
         - !GetAtt EC2FleetSecurityGroup.GroupId
-      SourceDestCheck: true
       SubnetId: !Select [ 1 ,!Ref EC2VPCSubNetIds ]
       Tags:
         - Key: ApplicationName
           Value: !Ref ApplicationName
         - Key: EnvironmentClass
           Value: !Ref EnvironmentClass
-      #UserData: String #Perhaps the app startup commands
 
   ApplicationLoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
@@ -138,33 +132,7 @@ Resources:
         Value: !Ref ApplicationName  
 
 
-# This is a template to use in future state, however the application is currently not capable of being launched or maintained using an autoscaling group. 
-#  ComputeFleet: 
-#      Type: AWS::AutoScaling::AutoScalingGroup
-#      Properties:
-#        Cooldown: 300
-#        DesiredCapacity: !Ref DesiredComputeCapacity
-#        LaunchConfigurationName: !Ref ComputeLaunchConfig
-#        MaxSize: !Ref EC2MaxSize
-#        MinSize: !Ref EC2MinSize
-#        MetricsCollection: 
-#          - Granularity: 1Minute 
-#        TargetGroupARNs: 
-#          - !Ref ALBHTTPTargetGroup       
-#          #- !Ref ALBHTTPSTargetGroup
-#        VPCZoneIdentifier: !Ref EC2VPCSubNetIds
-#        Tags: 
-#          - Key: EnvironmentClass
-#            Value: !Ref EnvironmentClass
-#            PropagateAtLaunch: 'true'
-  #ComputeLaunchConfig: #To be used with Autoscaling
-  #  Type: AWS::AutoScaling::LaunchConfiguration
-  #  Properties:
-  #    ImageId: !Ref AMIIdentifier
-  #    InstanceType: !Ref EC2InstanceType
-  #    KeyName: !Ref EC2KeyName
-  #    SecurityGroups: 
-  #      - !GetAtt EC2FleetSecurityGroup.GroupId
+
 
   EC2FleetSecurityGroup:
     Type: AWS::EC2::SecurityGroup

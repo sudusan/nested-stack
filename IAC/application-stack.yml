@@ -17,22 +17,28 @@ Parameters:
     - PRD
   AMIIdentifier:
     Type: String
+    Default: "ami-0245d318c6788de52"
   DBInstanceType:
     Type: String
     Default: db.m5.large
   EC2InstanceType: 
     Type: String
-    Default: t2.micro
+    Default: t2.large
   EC2KeyName: 
     Type: String
+    Default: "isen1-usw1-kp"
   EC2VPCSubNetIds:
     Type: String
+    Default: "subnet-097d4c07ade875bc2,subnet-0a20ce4761d080884"
   ALBVPCSubNetIds:
     Type: String
+    Default: "subnet-1d656b46,subnet-3dff0d5b"
   DBSubNetIds:
     Type: String
+    Default: "subnet-0597dbcdcc4305182,subnet-0775f8f58133f505c"
   VPCId: 
     Type: String
+    Default: "vpc-527f7c35"
   InternetAccessible:
     Type: String
     Default: internet-facing
@@ -41,6 +47,7 @@ Parameters:
       - internal
   HTTPSCertificateARN:
     Type: String
+    Default: 'arn:aws:acm:us-west-1:805262168568:certificate/68a11a31-260c-4dbc-8314-b46bb705f00e'
 Resources:
   ComputeFleet:
     Type: AWS::CloudFormation::Stack
