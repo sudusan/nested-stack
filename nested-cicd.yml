@@ -1752,7 +1752,7 @@ Resources:
                     with zipfile.ZipFile(tf, mode='r') as zipf:
                       for file in zipf.infolist():
                         fileName = file.filename
-                        putFile = s3client.put_object(Bucket=bucket, Key=fileName, Body=zipf.read(file))
+                        putFile = s3client.put_object(Bucket=s3target, Key=fileName, Body=zipf.read(file))
                         putObjects.append(putFile)
                         print(putFile)
                         print('success')
